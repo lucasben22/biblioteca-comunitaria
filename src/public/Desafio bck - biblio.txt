@@ -1,0 +1,68 @@
+
+Situación
+Estás desarrollando una API para una aplicación que se va a usar en una biblioteca comunitaria de barrio. La app se usa para gestionar el movimiento de libros entre vecinos. No es una biblioteca tradicional: los usuarios pueden donar, prestar y pedir libros, todo de manera voluntaria.
+
+🎯 Tu objetivo
+Diseñá la API RESTful completa para esta aplicación.
+
+Usuarios:
+Se registran con nombre, email, y una dirección aproximada (para saber en qué zona están).
+No hay login con contraseña, por ahora es solo para probar funcionalidades (podés asumir autenticación más adelante).
+
+Libros:
+Pueden ser donados por los usuarios.
+Tienen título, autor, género y un estado (por ejemplo: "disponible", "prestado", "reservado").
+
+Préstamos:
+Un usuario puede pedir prestado un libro de otro usuario.
+El sistema debe guardar quién lo pidió, a quién se lo pidió, y el estado del préstamo (pendiente, aceptado, rechazado, devuelto).
+La entrega del libro se hace en persona, no hay logística automatizada.
+
+Definí las entidades del sistema y sus relaciones.
+Diseñá los endpoints REST: rutas, métodos HTTP, estructuras de datos.
+Pensá los controllers: ¿qué lógica manejaría cada uno?
+*Pensá en validaciones necesarias (por ejemplo, ¿puede alguien pedir prestado su propio libro?).
+Errores comunes que tenés que manejar.
+Organización del proyecto: carpetas, archivos, modularización.
+
+-luego auten-autor con 3rdP
+
+--------------------------------------
+3 endpoints: books, users, lendings
+-relaciones entre ellos dados por models-controllers
+
+Usuarios (/users)
+GET	/users		Listar todos los usuarios
+GET	/users/:id		Ver info de un usuario específico
+POST	/users		Crear un nuevo usuario
+PUT	/users/:id		Actualizar los datos de un usuario
+DEL  /users/:id		Eliminar un usuario
+
+Libros (/books)
+GET	/books		Listar todos los libros (título, modo, estado)
+GET	/books/:id		Detalle de un libro (info + estado disponibilidad)
+POST	/books		Crear un nuevo libro (donado o privado)
+PUT	/books/:id		Actualizar info de un libro
+DEL  /books/:id		Eliminar un libro
+
+Préstamos (/lendings)
+GET	/lendings		Listar todos los préstamos
+GET	/lendings/:id	Info de un préstamo específico
+POST	/lendings		Crear una nueva solicitud de préstamo
+PUT	/lendings/:id	Aceptar / rechazar / marcar como devuelto, etc.
+DEL  /lendings/:id	Cancelar solicitud (si está pendiente, por ejemplo)
+
+podrías considerar rutas como /users/:id/lendings para ver préstamos de un usuario específico.
+
+--------------------------------------
+Models:
+
+Users:
+_name
+_email (unique)
+_address
+
+
+--------------------------------------
+Routes/Controllers
+
