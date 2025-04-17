@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import userRouter from "./routes/users.routes.js";
 
 //SERVER
 const PORT = 3000;
@@ -8,16 +9,15 @@ app.listen(PORT, ()=>{
     console.log("Listen on Port: ", PORT)
 });
 
-//ROUTES
-app.get ("/", (req, res) => {
-    res.send("paises bajos")
-});
+//MW
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
 
+//ROUTES
+app.use("/api/users", userRouter)
 
 //DB
 const mongoDBUrl = "mongodb://127.0.0.1:27017/BiblioComu";
 mongoose.connect(mongoDBUrl)
     .then(()=> console.log("Conectado"))
     .catch((error)=> console.log("Error de conexión: ", error));
-
-//MW
