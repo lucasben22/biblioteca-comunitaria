@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import userRouter from "./routes/users.routes.js";
+import bookRouter from "./routes/books.routes.js";
 
 //SERVER
 const PORT = 3000;
@@ -14,7 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 
 //ROUTES
-app.use("/api/users", userRouter)
+app.use("/api/users", userRouter);
+app.use("/api/books", bookRouter);
 
 //DB
 const mongoDBUrl = "mongodb://127.0.0.1:27017/BiblioComu";
