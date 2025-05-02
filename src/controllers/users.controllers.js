@@ -39,6 +39,25 @@ export const postUser = async (req, res) => {
     }
 }
 
+export const putUser = async (req, res) => {
+    const {id} = req.params;
+    const {name, age, address, email, isActive} = req.body;
+
+    if(!name || !age || !email || !address || !isActive) {
+        return res.status(400).send({answer: "Error", message: "Missing required fields"})
+    } 
+    try {
+        const user = await User.findByIdAndUpdate(id, {name, age, email, address, isActive});
+    if(user)
+        res.status(201).send({answer: "Ok", message: "User updated: ", user})
+    else
+        res.status(404).send({answer: "Error", message: "User not found"})
+    } catch(error) {
+        res.status(400).send({answer:"Error", message: error.message})
+    }
+}
+
+
 export const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
