@@ -24,3 +24,30 @@ export const getUserById = async (req, res) => {
         res.status(400).send({ answer: "Error", message: error.message });
     }
 };
+
+export const postUser = async (req, res) => {
+    const {name, age, email, address, isActive} = req.body;
+
+    if(!name || !age || !email || !address || !isActive) {
+        return res.status(400).send({answer: "Error", message: "Missing required fields"})
+    } 
+    try {
+        const newUser = await User.create({name, age, email, address, isActive});
+        res.status(201).send({answer: "Ok", message: "User created: ", newUser})
+    } catch(error) {
+        res.status(400).send({answer:"Error", message: error.message})
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const userDeleted = await User.findByIdAndDelete(id);
+        if (!userDeleted) {
+            return res.status(404).send({ answer: "Error", message: "User not found" });
+        }
+        res.status(200).send({ answer: "Ok", message: "User deleted" });
+    } catch (error) {
+        res.status(400).send({ answer: "Error", message: error.message });
+    }
+};
