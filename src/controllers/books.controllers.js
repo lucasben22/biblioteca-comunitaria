@@ -14,7 +14,7 @@ export const getBook = async (req,res) => {
     const {id} = req.params;
 
     try {
-        const book = await Book.findById(id);
+        const book = await Book.findById(id).populate("owner", "name email");
         if(book)
             res.status(201).send({answer: "Ok", message: "Book: ", book})
         else
@@ -26,12 +26,12 @@ export const getBook = async (req,res) => {
 }
 
 export const postBook = async (req,res) => {
-    const {title, author, genre, available} = req.body;
+    const {title, author, genre, available, owner} = req.body;
 
-    if (!title || !author || !genre || available === undefined)
+    if (!title || !author || !genre || ! owner || available === undefined)
         return res.status(400).send({answer: "Error", message: "Missing required fields"})
         try {
-            const newBook = await Book.create({title, author, genre, available});
+            const newBook = await Book.create({title, author, genre, available, owner});
             res.status(201).send({answer: "Ok", message: "Book created", newBook})
         }
     catch (error) {
@@ -39,22 +39,37 @@ export const postBook = async (req,res) => {
     }
 }
 
-export const putBook = async (req,res) => {
-    const {id} = req.params;
-    const {title, author, genre, available} = req.body;
+export const putBook = async (req, res) => {
+    const { id } = req.params;
+    const { title, author, genre, available, owner } = req.body;
 
-    if (!title || !author || !genre || available === undefined)
-        return res.status(400).send({answer: "Error", message: "Missing required fields"})
-        
-        try {
-            const updatedBook = await Book.findByIdAndUpdate(id, {title, author, genre, available});
-            res.status(201).send({answer: "Ok", message: "Book updated", updatedBook})
-        }
-    
-    catch (error) {
-        res.status(400).send({answer: "Error", message: error.message})
+    if (!title || !author || !genre || !owner || available === undefined) {
+        return res.status(400).send({
+            answer: "Error",
+            message: "Missing required fields"
+        });
     }
-}
+
+    try {
+        const updatedBook = await Book.findByIdAndUpdate(
+            id,
+            { title, author, genre, available, owner },
+            { new: true }
+        ).populate("owner", "name email");
+
+        res.status(200).send({
+            answer: "Ok",
+            message: "Book updated",
+            book: updatedBook
+        });
+
+    } catch (error) {
+        res.status(400).send({
+            answer: "Error",
+            message: error.message
+        });
+    }
+};
 
 export const deleteBook = async (req,res) => {
     const {id} = req.params;
