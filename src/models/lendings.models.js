@@ -4,10 +4,9 @@ const lendingSchema = new Schema ({
     requestedBy: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true,
-        unique: true
+        required: true
     },
-    title: {
+    book: {
         type: Schema.Types.ObjectId,
         ref: "Book",
         required: true,
@@ -20,7 +19,7 @@ const lendingSchema = new Schema ({
     status: {
     type: String,
     enum: ["accepted", "rejected", "returned"],
-    default: "aceptado" 
+    default: "accepted" 
     }
 })
 
