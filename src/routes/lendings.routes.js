@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { postLending } from "../controllers/lendings.controllers.js";
+import { getLendings, postLending } from "../controllers/lendings.controllers.js";
 
 const lendingRouter = Router();
 
+lendingRouter.get("/", getLendings);
 lendingRouter.post("/", postLending);
 
 export default lendingRouter;

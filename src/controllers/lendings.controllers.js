@@ -1,6 +1,17 @@
 import { Lending } from "../models/lendings.models.js";
 import { Book } from "../models/books.models.js";
 
+export const getLendings = async (req,res) => {
+    try {
+        const lendings = await Lending.find().populate("requestedBy", "name")
+        .populate("book", "title")
+        .populate("owner", "name");
+        res.status(200).send(lendings)
+    }catch (error) {
+        res.status(400).send({answer: "Error", message: error.message})
+    }
+}
+
 export const postLending = async (req, res) => {
     const { requestedBy, owner, book, status } = req.body;
 
@@ -23,8 +34,3 @@ export const postLending = async (req, res) => {
         res.status(400).send({ answer: "Error", message: error.message });
     }
 };
-
-// export const getLendings = async (req,res) => {
-
-
-// }
