@@ -26,13 +26,13 @@ export const getUserById = async (req, res) => {
 };
 
 export const postUser = async (req, res) => {
-    const {name, age, email, address, isActive, booksOwned} = req.body;
+    const {name, age, email, address, isActive, role} = req.body;
 
-    if(!name || !age || !email || !address || booksOwned || !isActive === undefined) {
+    if(!name || !age || !email || !address || !role || !isActive === undefined) {
         return res.status(400).json({status: "Error", message: "Missing required fields"})
     } 
     try {
-        const newUser = await User.create({name, age, email, address, isActive, booksOwned});
+        const newUser = await User.create({name, age, email, address, isActive, role});
         res.status(201).json({status: "Ok", message: "User created: ", newUser})
     } catch(error) {
         res.status(400).json({status:"Error", message: error.message})
@@ -41,13 +41,13 @@ export const postUser = async (req, res) => {
 
 export const putUser = async (req, res) => {
     const {id} = req.params;
-    const {name, age, address, email, isActive, booksOwned } = req.body;
+    const {name, age, address, email, isActive, role } = req.body;
 
-    if(!name || !age || !email || !address || booksOwned ||  !isActive === undefined) {
+    if(!name || !age || !email || !address || !role ||  !isActive === undefined) {
         return res.status(400).json({status: "Error", message: "Missing required fields"})
     } 
     try {
-        const user = await User.findByIdAndUpdate(id, {name, age, email, address, isActive, booksOwned});
+        const user = await User.findByIdAndUpdate(id, {name, age, email, address, isActive, role});
     if(user)
         res.status(201).json({status: "Ok", message: "User updated: ", user})
     else
