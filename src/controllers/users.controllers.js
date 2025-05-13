@@ -1,4 +1,5 @@
 import { User } from "../models/users.models.js";
+import bcrypt from "bcrypt";
 
 export const getUsers = async (req, res) => {
     try {
@@ -26,18 +27,50 @@ export const getUserById = async (req, res) => {
 };
 
 export const postUser = async (req, res) => {
-    const {name, age, email, address, isActive, role} = req.body;
+  const { name, age, email, address, isActive, role, password } = req.body;
 
-    if(!name || !age || !email || !address || !role || !isActive === undefined) {
-        return res.status(400).json({status: "Error", message: "Missing required fields"})
-    } 
-    try {
-        const newUser = await User.create({name, age, email, address, isActive, role});
-        res.status(201).json({status: "Ok", message: "User created: ", newUser})
-    } catch(error) {
-        res.status(400).json({status:"Error", message: error.message})
+  // Validación de campos obligatorios
+  if (!name || !age || !email || !address || !role || isActive === undefined || !password) {
+    return res.status(400).json({
+      status: "Error",
+      message: "Missing required fields",
+    });
+  }
+
+  try {
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        status: "Error",
+        message: "El usuario ya existe con ese email",
+      });
     }
-}
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      name,
+      age,
+      email,
+      address,
+      isActive,
+      role,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({
+      status: "Ok",
+      message: "User created",
+      user: newUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "Error",
+      message: error.message,
+    });
+  }
+};
 
 export const putUser = async (req, res) => {
     const {id} = req.params;
