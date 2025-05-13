@@ -1,23 +1,42 @@
 import express from "express";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes/index.routes.js";
+import MongoStore from "connect-mongo";
+import session from "express-session";
 
-//SERVER
-const PORT = 3000;
+// 1. Cargar variables de entorno
+dotenv.config();
+
+// 2. Configurar app y puerto
+const PORT = process.env.PORT;
 const app = express();
-app.listen(PORT, ()=>{
-    console.log("Listen on Port: ", PORT)
-});
 
-//MW
+// 3. Middlewares básicos
 app.use(express.json());
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }));
 
-//ROUTES
+// 4. Configurar sesiones (antes de las rutas)
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    ttl: 1000 * 60 * 60 * 24, // un día
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
+
+// 5. Conexión a la base de datos
+const mongoDBUrl = process.env.MONGO_URL;
+mongoose.connect(mongoDBUrl)
+  .then(() => console.log("Database connected"))
+  .catch((error) => console.log("Connection error: ", error));
+
+// Rutas
 app.use("/", router);
 
-//DB
-const mongoDBUrl = "mongodb://127.0.0.1:27017/BiblioComu";
-mongoose.connect(mongoDBUrl)
-    .then(()=> console.log("Conectado"))
-    .catch((error)=> console.log("Error de conexión: ", error));
+// 7. Iniciar el servidor
+app.listen(PORT, () => {
+  console.log("Server listening");
+});
