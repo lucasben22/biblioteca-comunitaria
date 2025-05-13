@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { getLendings, postLending } from "../controllers/lendings.controllers.js";
+import * as lendingsController from "../controllers/lendings.controllers.js";
 
 const lendingRouter = Router();
 
-lendingRouter.get("/", getLendings);
-lendingRouter.post("/", postLending);
+lendingRouter.get("/", lendingsController.getLendings);
+lendingRouter.post("/", lendingsController.postLending);
+lendingRouter.put("/:id", lendingsController.putLending);
 
 export default lendingRouter;
