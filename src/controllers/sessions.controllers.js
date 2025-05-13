@@ -25,9 +25,30 @@ export const postLogin = async (req, res) => {
       role: user.role,
     };
 
-    res.status(200).json({ message: "Login exitoso", user: req.session.user });
+    res.status(200).json({ message: "Login success", user: req.session.user });
 
   } catch (error) {
-    res.status(500).json({ message: "Error al iniciar sesión", error: error.message });
+    res.status(500).json({ message: "Error at starting session", error: error.message });
   }
+};
+
+export const logout = (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: "Error trying to close session" });
+    }
+    res.clearCookie("connect.sid");
+    res.status(200).json({ message: "Session ended" });
+  });
+};
+
+export const currentUser = (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "No current session" });
+  }
+
+  res.status(200).json({
+    message: "User in session",
+    user: req.session.user
+  });
 };

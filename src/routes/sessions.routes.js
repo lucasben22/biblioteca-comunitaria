@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { postLogin } from "../controllers/sessions.controllers.js";
+import { postLogin, logout, currentUser } from "../controllers/sessions.controllers.js";
 
-const loginRouter = Router();
-loginRouter.post("/", postLogin);
+const sessionRouter = Router();
+sessionRouter.post("/", postLogin);
+sessionRouter.post("/logout", logout);
+sessionRouter.get("/current", currentUser);
 
-export default loginRouter;
+export default sessionRouter;
